@@ -2,7 +2,7 @@ import React, { Component } from "react";
 // import Express from "express";
 const ipfs = require("ipfs-http-client");
 const buffer = require("Buffer");
-const IPFS = ipfs({ host: "localhost", port: 5001, protocol: "http" });
+const IPFS = ipfs({ host: "ipfs.infura.io", port: 5001, protocol: "https" });
 class Report extends Component {
   constructor(props) {
     super(props);
@@ -25,9 +25,11 @@ class Report extends Component {
     var myBuffer = buffer.from(this.state.report);
     console.log(myBuffer);
     IPFS.add(myBuffer, (err, res) => {
-      console.log("IPFS Rsult", res);
       if (err) {
         console.log(err);
+      } else {
+        console.log("IPFS Working");
+        console.log("IPFS Rsult", res[0].hash);
       }
     });
   };
