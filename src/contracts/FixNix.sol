@@ -6,13 +6,18 @@ contract FixNix {
     mapping(uint256 => string) public user_file;
     mapping(uint256 => string) public user_state;
 
+    address private all_user_address;
     address private investigator_address;
     address private reviewer_address;
     address private analyst_address;
 
-    constructor(address _investigator, address _reviewer, address _analyst)
-        public
-    {
+    constructor(
+        address _all_user,
+        address _investigator,
+        address _reviewer,
+        address _analyst
+    ) public {
+        all_user_address = _all_user;
         investigator_address = _investigator;
         reviewer_address = _reviewer;
         analyst_address = _analyst;

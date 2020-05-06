@@ -1,26 +1,64 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Web3 from "web3";
+
+import FixNix from "../abis/FixNix.json";
+
+const buffer = require("Buffer");
+
+const _ipfs = require("ipfs-http-client");
+const _IPFS = _ipfs({
+  host: "ipfs.infura.io",
+  port: 5001,
+  protocol: "https",
+});
+
+const IPFS = require("ipfs-mini");
+const ipfs = new IPFS({
+  host: "ipfs.infura.io",
+  port: 5001,
+  protocol: "https",
+});
+
+const ganache_url = "HTTP://127.0.0.1:7545";
 
 function Test1() {
-    const _ipfs = require("ipfs-http-client");
-  const buffer = require("Buffer");
-    const _IPFS = _ipfs({ host: "ipfs.infura.io", port: 5001, protocol: "https" });
-  const IPFS = require("ipfs-mini");
-  const ipfs = new IPFS({
-    host: "ipfs.infura.io",
-    port: 5001,
-    protocol: "https",
-  });
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     contact: "",
     report: "",
   });
-
   const [fileHash, setFileHash] = useState();
   const [fileBuffer, setFileBuffer] = useState();
-
+  const [contract, setContract] = useState();
   const { name, email, contact, report } = formData;
+
+  //The below portion is executed only once after the first render cycle
+  useEffect(() => {
+    console.log(
+      "-------------------------------------------------------------------------"
+    );
+    async function loadBlockChain() {
+      const web3 = new Web3(ganache_url);
+      const networkId = await web3.eth.net.getId();
+      const networkData = FixNix.networks[networkId];
+
+      if (networkData) {
+        console.log("Connected to proper blockchain network");
+        const abi = FixNix.abi;
+        const address = networkData.address;
+        const contract = new web3.eth.Contract(abi, address);
+        if (contract) {
+          setContract(contract);
+        } else {
+          alert("Contract not loaded");
+        }
+      }
+    }
+
+    loadBlockChain()
+  }, []);
+
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -39,7 +77,7 @@ function Test1() {
     e.preventDefault();
 
     console.log(typeof formData);
-    
+
     var myBuffer = buffer.from(JSON.stringify(formData));
     console.log(typeof myBuffer);
     let response;
@@ -48,11 +86,11 @@ function Test1() {
     console.log(response);
 
     // var resFileHash
-    _IPFS.add(fileBuffer, (err, res)=>{
-      setFileHash(res[0].hash)
-      console.log("File Hash: ",res[0].hash)
-    })
-    
+    _IPFS.add(fileBuffer, (err, res) => {
+      setFileHash(res[0].hash);
+      console.log("File Hash: ", res[0].hash);
+    });
+
     const ipfsres = await ipfs.catJSON(response);
     console.log(ipfsres);
   };
