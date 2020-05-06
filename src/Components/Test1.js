@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 
 function Test1() {
-  //   const ipfs = require("ipfs-http-client");
+    const _ipfs = require("ipfs-http-client");
   const buffer = require("Buffer");
-  //   const IPFS = ipfs({ host: "ipfs.infura.io", port: 5001, protocol: "https" });
+    const _IPFS = _ipfs({ host: "ipfs.infura.io", port: 5001, protocol: "https" });
   const IPFS = require("ipfs-mini");
   const ipfs = new IPFS({
     host: "ipfs.infura.io",
@@ -16,32 +16,43 @@ function Test1() {
     contact: "",
     report: "",
   });
+
+  const [fileHash, setFileHash] = useState();
+  const [fileBuffer, setFileBuffer] = useState();
+
   const { name, email, contact, report } = formData;
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  const captureFile = (event) => {
+    event.preventDefault();
+    const file = event.target.files[0];
+    const reader = new window.FileReader();
+    reader.readAsArrayBuffer(file);
+    reader.onloadend = () => {
+      setFileBuffer(Buffer(reader.result));
+    };
+  };
+
   const onSubmit = async (e) => {
     e.preventDefault();
+
     console.log(typeof formData);
+    
     var myBuffer = buffer.from(JSON.stringify(formData));
     console.log(typeof myBuffer);
     let response;
-    // await IPFS.add(myBuffer, (err, res) => {
-    //   if (err) {
-    //     console.log(err);
-    //   } else {
-    //     console.log("IPFS Working");
-    //     console.log("IPFS Rsult", res[0].hash);
-    //     response = res[0].hash;
-    //   }
-    // });
-    // // const node = await ipfs.create();
 
-    // const data = await IPFS.cat(response);
-    // console.log(data);
     response = await ipfs.add(myBuffer);
     console.log(response);
 
+    // var resFileHash
+    _IPFS.add(fileBuffer, (err, res)=>{
+      setFileHash(res[0].hash)
+      console.log("File Hash: ",res[0].hash)
+    })
+    
     const ipfsres = await ipfs.catJSON(response);
     console.log(ipfsres);
   };
@@ -49,8 +60,8 @@ function Test1() {
     <div>
       {" "}
       <form onSubmit={(e) => onSubmit(e)}>
-        <lable htmlFor="Description">Description</lable>
-        <br></br>
+        <label htmlFor="Description">Description</label>
+        <br />
         <textarea
           rows="4"
           cols="50"
@@ -59,11 +70,11 @@ function Test1() {
           value={report}
           onChange={(e) => onChange(e)}
         ></textarea>
-        <br></br>
-        <br></br>
+        <br />
+        <br />
         <label>Personal details</label>
-        <br></br>
-        <br></br>
+        <br />
+        <br />
         <label htmlFor="username">Enter username</label>
         <input
           id="username"
@@ -89,6 +100,8 @@ function Test1() {
           value={contact}
           onChange={(e) => onChange(e)}
         />
+        <input type="file" onChange={captureFile} />
+
         <button>Send data!</button>
       </form>
     </div>
