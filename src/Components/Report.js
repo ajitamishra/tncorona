@@ -17,11 +17,8 @@ class Report extends Component {
   };
   submitHandler = (e) => {
     e.preventDefault();
+    fetch("/api/form-submit");
     console.log("Submission queued");
-    // const data = {
-    //   id: this.state.report,
-    // };
-    // console.log(typeof JSON.parse(JSON.stringify(data)));
     var myBuffer = buffer.from(this.state.report);
     console.log(myBuffer);
     IPFS.add(myBuffer, (err, res) => {
@@ -47,9 +44,7 @@ class Report extends Component {
             onChange={this.changeHandler}
           ></textarea>
           <br></br>
-          <br></br>
-          <input type="file" name="doc" id="doc"></input>
-          <br></br>
+
           <br></br>
           <label>Personal details</label>
           <br></br>
