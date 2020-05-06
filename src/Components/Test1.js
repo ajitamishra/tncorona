@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import UID from "uid";
 function Test1() {
   //   const ipfs = require("ipfs-http-client");
   const buffer = require("Buffer");
@@ -10,6 +10,7 @@ function Test1() {
     port: 5001,
     protocol: "https",
   });
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -26,22 +27,11 @@ function Test1() {
     var myBuffer = buffer.from(JSON.stringify(formData));
     console.log(typeof myBuffer);
     let response;
-    // await IPFS.add(myBuffer, (err, res) => {
-    //   if (err) {
-    //     console.log(err);
-    //   } else {
-    //     console.log("IPFS Working");
-    //     console.log("IPFS Rsult", res[0].hash);
-    //     response = res[0].hash;
-    //   }
-    // });
-    // // const node = await ipfs.create();
-
-    // const data = await IPFS.cat(response);
-    // console.log(data);
     response = await ipfs.add(myBuffer);
     console.log(response);
 
+    const key = UID();
+    console.log(key);
     const ipfsres = await ipfs.catJSON(response);
     console.log(ipfsres);
   };
