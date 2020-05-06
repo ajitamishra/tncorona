@@ -37,11 +37,32 @@ class Report extends Component {
     return (
       <div>
         <form onSubmit={this.submitHandler}>
-          <input
-            type="file"
+          <lable>Description</lable>
+          <br></br>
+          <textarea
+            rows="4"
+            cols="50"
             name="report"
+            id="report"
             onChange={this.changeHandler}
-          ></input>
+          ></textarea>
+          <br></br>
+          <br></br>
+          <input type="file" name="doc" id="doc"></input>
+          <br></br>
+          <br></br>
+          <label>Personal details</label>
+          <br></br>
+          <div>
+            <br></br>
+            Name: <input type="text" name="name" id="name"></input>
+            <br></br>
+            Email: <input type="email" name="email" id="email"></input>
+            <br></br>
+            Contact: <input type="number" id="contact" name="contact"></input>
+            <br></br>
+          </div>
+          <br></br>
           <button type="submit">Submit</button>
         </form>
       </div>
