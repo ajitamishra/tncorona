@@ -4,6 +4,9 @@ pragma solidity >=0.5.12;
 contract Corona {
     mapping(string => string[]) users;
     string[] partyA;
+    string[] partyB;
+    bool decisionA;
+    bool decisionB;
     address A = 0x249cC999Cc542913Bb71DD26A13c38d5Af316F55;
     address B = 0xED59DEb6E99eB382c0F3f68a7eD2e9616995e4B3;
     address C = 0x08159690689aDD3045e494DD07b7C77D7c2355bC;
@@ -48,5 +51,25 @@ contract Corona {
 
     function getpartyA() public view returns (string memory) {
         return partyA[partyA.length - 1];
+    }
+
+    function verdictA(bool decision) public {
+        decisionA = decision;
+    }
+
+    function setpartyB(string memory key) public {
+        partyB.push(key);
+    }
+
+    function getpartyB() public view returns (string memory) {
+        return partyB[partyB.length - 1];
+    }
+
+    function verdictB(bool decision) public {
+        decisionB = decision;
+    }
+
+    function verdictC() public view returns (bool) {
+        return (decisionA == decisionB);
     }
 }

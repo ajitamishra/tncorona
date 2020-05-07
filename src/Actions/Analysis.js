@@ -27,7 +27,7 @@ function Analysis(props) {
             <PartyA {...props} />
           </Route>
           <Route path="/PartyB">
-            <PartyB />
+            <PartyB {...props} />
           </Route>
           <Route path="/PartyC">
             <PartyC />
