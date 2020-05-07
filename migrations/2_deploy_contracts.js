@@ -1,4 +1,5 @@
-const ConvertLib = artifacts.require("ConvertLib");
-const MetaCoin = artifacts.require("MetaCoin");
+const Corona = artifacts.require("Corona");
 
-module.exports = function (deployer) {};
+module.exports = function (deployer) {
+  deployer.deploy(Corona);
+};

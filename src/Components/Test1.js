@@ -1,15 +1,21 @@
 import React, { useState } from "react";
 import UID from "uid";
-function Test1() {
+import Analysis from "../Actions/Analysis";
+function Test1(props) {
   //   const ipfs = require("ipfs-http-client");
-  const buffer = require("Buffer");
   //   const IPFS = ipfs({ host: "ipfs.infura.io", port: 5001, protocol: "https" });
+  // console.log("Inside test", props.passedStates);
+  //------------------------------- Ipfs  setup ----------------------
+
   const IPFS = require("ipfs-mini");
+  const buffer = require("Buffer");
   const ipfs = new IPFS({
     host: "ipfs.infura.io",
     port: 5001,
     protocol: "https",
   });
+
+  // ------------------------formdata get and set--------------------------------------
 
   const [formData, setFormData] = useState({
     name: "",
@@ -18,21 +24,41 @@ function Test1() {
     report: "",
   });
   const { name, email, contact, report } = formData;
+  const contract = props.passedStates.contract;
+  const account = props.passedStates.account;
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  //----------------data submission---------------------------
+
   const onSubmit = async (e) => {
     e.preventDefault();
     console.log(typeof formData);
     var myBuffer = buffer.from(JSON.stringify(formData));
     console.log(typeof myBuffer);
-    let response;
+    let response, ipfsres;
+
+    //--------------------adding to ipfs----------------------------
+
     response = await ipfs.add(myBuffer);
     console.log(response);
 
-    const key = UID();
-    console.log(key);
-    const ipfsres = await ipfs.catJSON(response);
+    // -------------------secret key generation-----------------------------
+    const secretkey = UID();
+    console.log(secretkey);
+
+    //----------------setting hash on smart contract--------------
+
+    await contract.methods
+      .setDataHash(response, secretkey)
+      .send({ from: account });
+    const reply = await contract.methods.getDataHash(secretkey).call();
+    console.log(reply);
+
+    //----------------ipfs cat---------------------
+
+    ipfsres = await ipfs.catJSON(response);
     console.log(ipfsres);
   };
   return (

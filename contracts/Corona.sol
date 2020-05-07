@@ -1,4 +1,4 @@
-pragma solidity ^0.6.4;
+pragma solidity >=0.5.12;
 
 
 contract Corona {
@@ -7,7 +7,17 @@ contract Corona {
     address B = 0xED59DEb6E99eB382c0F3f68a7eD2e9616995e4B3;
     address C = 0x08159690689aDD3045e494DD07b7C77D7c2355bC;
 
-    function getDescriptionHash(string memory key)
+    // address A;
+    // address B;
+    // address C;
+
+    // constructor(address _A, address _B, address _C) public {
+    //     A = _A;
+    //     B = _B;
+    //     C = _C;
+    // }
+
+    function getDataHash(string memory key)
         public
         view
         returns (string memory)
@@ -23,9 +33,7 @@ contract Corona {
         return users[key][1];
     }
 
-    function setDescriptionHash(string memory hashId, string memory key)
-        public
-    {
+    function setDataHash(string memory hashId, string memory key) public {
         users[key][0] = hashId;
     }
 
@@ -33,5 +41,5 @@ contract Corona {
         users[key][1] = hashId;
     }
 
-    function partyA() public {}
+    function partyA(string memory key) public {}
 }
