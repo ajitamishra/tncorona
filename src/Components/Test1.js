@@ -53,6 +53,8 @@ function Test1(props) {
     await contract.methods
       .setDataHash(response, secretkey)
       .send({ from: account });
+    await contract.methods.setpartyA(secretkey).send({ from: account });
+    console.log(typeof secretkey);
     const reply = await contract.methods.getDataHash(secretkey).call();
     console.log("reply from contract", reply);
 

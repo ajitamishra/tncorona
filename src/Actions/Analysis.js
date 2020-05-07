@@ -11,7 +11,7 @@ function Analysis(props) {
     <Router>
       <div>
         <button>
-          <Link to="/PartyA">PartyA</Link>
+          <Link to="/PartyA">PartyA </Link>
         </button>
         <button>
           <Link to="/PartyB">PartyB</Link>
@@ -24,7 +24,7 @@ function Analysis(props) {
         </button>
         <Switch>
           <Route path="/PartyA">
-            <PartyA />
+            <PartyA {...props} />
           </Route>
           <Route path="/PartyB">
             <PartyB />

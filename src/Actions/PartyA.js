@@ -1,35 +1,65 @@
-import React from "react";
+import React, { Component } from "react";
+const IPFS = require("ipfs-mini");
+class PartyA extends Component {
+  constructor(props) {
+    super(props);
 
-function PartyA(props) {
-  //------------------------------- Ipfs  setup ----------------------
+    this.state = {
+      ipfsres: {},
+      ans: null,
+      genuine: false,
+    };
+  }
 
-  const IPFS = require("ipfs-mini");
-  const buffer = require("Buffer");
-  const ipfs = new IPFS({
-    host: "ipfs.infura.io",
-    port: 5001,
-    protocol: "https",
-  });
+  componentDidMount = async () => {
+    // -------------------ipfshash setup------------------
 
-  //------------------------calling gethash-----------------
+    console.log("Inside componenDidMount");
 
-  const contract = props.passedStates.contract;
-  const account = props.passedStates.account;
-  const reply = contract.methods.getDataHash(secretkey).call();
-  console.log("reply from contract", reply);
+    const ipfs = new IPFS({
+      host: "ipfs.infura.io",
+      port: 5001,
+      protocol: "https",
+    });
 
-  //-----------------fetching from ipfs-------------------
+    //------------------------calling gethash-----------------
 
-  const ipfsres = ipfs.catJSON(reply);
-  console.log(ipfsres);
+    const contract = this.props.passedStates.contract;
+    const account = this.props.passedStates.account;
+    const key = await contract.methods.getpartyA().call();
+    console.log("key from getPartyA method smart contract", key);
+    console.log(typeof key.toString());
+    const reply = await contract.methods.getDataHash(key.toString()).call();
+    console.log("reply from contract in partyA ", reply);
 
-  return (
-    <div>
-      <p>hello</p>
-      <button>Genuine</button>
-      <button>Not Genuine</button>
-    </div>
-  );
+    //-----------------fetching from ipfs-------------------
+
+    const res = await ipfs.catJSON(reply);
+    this.setState({ ipfsres: res });
+    const a = this.state.ipfsres.report;
+    this.setState({ ans: a });
+  };
+  changeHandler = async () => {
+    this.setState({ genuine: true });
+  };
+  changeHandlernotG = async () => {
+    this.setState({ genuine: false });
+  };
+
+  render() {
+    {
+      this.state.genuine &&
+        console.log("Response from PartyA", this.state.genuine);
+    }
+    return (
+      <div>
+        <h1>Description:</h1>
+        <p>{this.state.ans}</p>
+        <button onClick={this.changeHandler}>Genuine</button>
+        <button onClick={this.changeHandlernotG}>Not Genuine</button>
+      </div>
+    );
+  }
 }
 
 export default PartyA;
