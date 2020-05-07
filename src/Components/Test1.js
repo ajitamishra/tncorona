@@ -54,7 +54,7 @@ function Test1(props) {
       .setDataHash(response, secretkey)
       .send({ from: account });
     const reply = await contract.methods.getDataHash(secretkey).call();
-    console.log(reply);
+    console.log("reply from contract", reply);
 
     //----------------ipfs cat---------------------
 

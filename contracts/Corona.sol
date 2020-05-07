@@ -3,6 +3,7 @@ pragma solidity >=0.5.12;
 
 contract Corona {
     mapping(string => string[]) users;
+    string[] hashes;
     address A = 0x249cC999Cc542913Bb71DD26A13c38d5Af316F55;
     address B = 0xED59DEb6E99eB382c0F3f68a7eD2e9616995e4B3;
     address C = 0x08159690689aDD3045e494DD07b7C77D7c2355bC;
@@ -34,7 +35,7 @@ contract Corona {
     }
 
     function setDataHash(string memory hashId, string memory key) public {
-        users[key][0] = hashId;
+        users[key].push(hashId);
     }
 
     function setFileHash(string memory hashId, string memory key) public {
